@@ -15,8 +15,8 @@ def users():
         data = request.json
         if 'username' in data and 'email' in data and 'password' in data:
             usr = models.User.query.filter_by(email=data['email'])
-            #
-            if usr is None:
+            #if re.match("^[a-zA-Z0-9\s]*$", username):
+            if usr is not None:
                 usr = models.User(data['username'], data['email'], data['password'])
                 usr.save()
                 return jsonify({"status":"pass", "username": usr.username, "message": "user created"}), 200

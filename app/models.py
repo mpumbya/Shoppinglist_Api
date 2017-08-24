@@ -1,4 +1,5 @@
-from app import db
+from app import bcrypt, db
+import jwt
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -28,6 +29,21 @@ class User(db.Model):
     def __repr__(self):
         return "<user: {}>".format(self.username)
         
+    def encode_auth_token(self,id):
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0,second=5),
+                'iat': datetime.datetime.utcnow(),
+                'sub': id
+            }
+            return jwt.encode(
+                payload,
+                app.config.get('SECRET_KEY'),
+                algorithm ='H256'
+            )
+        except Exception as e:
+            return e
+
 class List(db.Model):
     __tablename__ = 'lists'
     list_Id = db.Column(db.Integer, primary_key=True)
