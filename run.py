@@ -56,25 +56,25 @@ def reset():
         return jsonify({"status":"fail", "message":"Wrong paramaters"})
     abort(400)
 
-# This is the create item route
-@app.route('/create_list', methods=['POST'])
+# This is the create List route
+@app.route('/lists/create', methods=['POST'])
 def createList():
     if request.method == "POST":
         data = request.json
-        if 'name' in data and 'new_name' in data or 'description' in data and 'new_description' in data:
+        if 'name' in data and 'description' in data:
             lst = models.List.query.filter_by(name=data['name']).first()
             #
-            if lst is not None:
-                if lst.name == data['old_name']:
-                    lst.name == data['new_name']
+            if lst is None:
+                #if lst.name == data['old_name']:
+                #    lst.name == data['new_name']
                 lst = models.List(data['name'], data['description'])
                 lst.save()
-                return jsonify({"status":"pass", "name": lst.name, "message": "Shopping List Edited"}), 200
+                return jsonify({"status":"pass", "name": lst.name, "message": "Shopping List Created"}), 200
             return jsonify({"status":"fail","message": "Shopping List already exists"}), 200
         return jsonify({"status":"fail", "message":"missing paramaters"})
     abort(400)
 
-# This is the edit item route
+# This is the edit list route
 @app.route('/lists/', methods=['GET'])
 def allists():
     if request.method == "GET":
@@ -94,7 +94,7 @@ def allists():
 
 
 
-@app.route('/modify/<int:id>', methods=['GET','PUT','DELETE'])
+@app.route('/lists/modify/<int:id>', methods=['GET','PUT','DELETE'])
 def modifyList(id, **kwargs):
     lst = models.List.query.filter_by(list_Id=id).first()
     if not lst:
@@ -126,6 +126,8 @@ def modifyList(id, **kwargs):
         })
         response.status_code = 200
         return response
+
+# This is the create list route
 
 
 if __name__ =='__main__':
